@@ -1,0 +1,115 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://api.chucknorris.io/jokes/random",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        224,
+        0
+      ],
+      "id": "6d7b5e1b-aa37-4e9f-8578-52e5da45af3b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "httpMethod": [
+          "GET"
+        ],
+        "path": "jokes",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "eee35bc4-8eb7-497c-934c-d501aaec66b8",
+      "name": "Webhook",
+      "webhookId": "7bb8935e-118a-4865-8694-991ee09a7bbf",
+      "executeOnce": false
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.value || '';\nconst html = `<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Chuck Norris Joke</title>\n  <style>\n    body {\n      font-family: Arial, sans-serif;\n      background: linear-gradient(135deg, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.8) 100%),\n                  url('https://i.imghippo.com/files/bdK4315dg.png');\n      background-size: cover;\n      background-position: center;\n      background-attachment: fixed;\n      min-height: 100vh;\n      display: flex;\n      align-items: center;\n      justify-content: center;\n      padding: 20px;\n      margin: 0;\n    }\n    .popup {\n      background: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.75)),\n                  url('https://i.imghippo.com/files/bdK4315dg.png');\n      background-size: cover;\n      background-position: center;\n      border-radius: 20px;\n      padding: 40px;\n      max-width: 600px;\n      box-shadow: 0 20px 60px rgba(0,0,0,0.3);\n      animation: slideIn 0.3s ease-out;\n      backdrop-filter: blur(10px);\n      border: 3px solid rgba(255, 255, 255, 0.9);\n    }\n    @keyframes slideIn {\n      from { transform: translateY(-50px); opacity: 0; }\n      to { transform: translateY(0); opacity: 1; }\n    }\n    h1 {\n      color: #222;\n      margin-top: 0;\n      font-size: 28px;\n      text-align: center;\n      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);\n    }\n    p {\n      font-size: 18px;\n      line-height: 1.6;\n      color: #333;\n      text-align: center;\n      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);\n    }\n    .emoji {\n      font-size: 48px;\n      text-align: center;\n      margin-bottom: 15px;\n      text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.8);\n    }\n  </style>\n</head>\n<body>\n  <div class=\"popup\">\n    <h1>פולו מתוקה</h1>\n    <h1>Polo Metuka</h1>\n    <div class=\"emoji\">💪</div>\n    <h1>Chuck Norris Joke</h1>\n    <p>${text}</p>\n  </div>\n</body>\n</html>`;\nreturn [{ json: { html: html } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "0f7989a0-cda3-4be7-8931-7b0cc5d45220",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "=={{ $json.html }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Content-Type",
+                "value": "text/html"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        640,
+        0
+      ],
+      "id": "52b71c77-a49f-46a6-a2d4-d1b04286bd69",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "instanceId": "6987fe08b2a1193d802365c71223c1d483a1e80c60576124f597dd3c0240a4d0"
+  }
+}
